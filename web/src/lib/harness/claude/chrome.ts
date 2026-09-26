@@ -485,8 +485,12 @@ function steppedMarksAreStatusline(
  *  walk (its footer split off by a blank, like the background-agents footer), and only these rows
  *  tell it apart. A popup tail is exempt, because its grammar named every row. */
 function tailNamesAMenu(text: string): boolean {
-  return NUMBERED_OPTION_ROW.test(text) || namesAMenuKey(text);
+  return NUMBERED_OPTION_ROW.test(text) || namesAMenuKey(text.replace(BUSY_HINT, ""));
 }
+
+// Claude paints "esc to interrupt" on the mode row under a live box while a turn runs; no dialog
+// footer says it (theirs is "Esc to cancel"), so it must not read as a modal's key hint.
+const BUSY_HINT = /(?:^|\s+·\s+)esc to interrupt(?=\s+·\s+|\s*$)/i;
 
 /**
  * Whether a row of an `unknown` tail carries something else a modal paints: a pointer glyph anywhere,

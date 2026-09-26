@@ -914,3 +914,17 @@ describe("real corpus — pinned so any change to the walk shows up as a diff", 
     expect(lines.length - stripChrome(lines).length).toBe(stripped);
   });
 });
+
+// Claude Code 2.1.28x paints "esc to interrupt" on the mode row while a turn runs; the box is still live.
+describe("a busy turn's mode row", () => {
+  it.each([
+    "  ⏵⏵ bypass permissions on (shift+tab to cycle) · esc to interrupt · ← 2 agents",
+    "  ⏵⏵ accept edits on (shift+tab to cycle) · esc to interrupt",
+  ])("keeps the input box: %s", (status) => {
+    expect(hasInputBox(boxBuffer("❯ ", status))).toBe(true);
+  });
+
+  it("still refuses a row that names a dialog's own Esc hint", () => {
+    expect(hasInputBox(boxBuffer("❯ ", "  Esc to cancel"))).toBe(false);
+  });
+});
